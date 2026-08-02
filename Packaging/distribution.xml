@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Wraps the component package so Installer.app shows a real product name and
+  refuses to run on a macOS the app cannot launch on. A bare pkgbuild output
+  installs fine but presents itself by its identifier.
+-->
+<installer-gui-script minSpecVersion="2">
+    <title>Burning Claude</title>
+    <organization>com.local</organization>
+    <options customize="never" require-scripts="false" hostArchitectures="arm64,x86_64"/>
+
+    <volume-check>
+        <allowed-os-versions>
+            <os-version min="14.0"/>
+        </allowed-os-versions>
+    </volume-check>
+
+    <welcome file="welcome.html" mime-type="text/html"/>
+    <conclusion file="conclusion.html" mime-type="text/html"/>
+
+    <choices-outline>
+        <line choice="default"/>
+    </choices-outline>
+    <choice id="default" title="Burning Claude">
+        <pkg-ref id="com.local.burningclaude.app"/>
+    </choice>
+    <pkg-ref id="com.local.burningclaude.app" version="1.0.0" onConclusion="none">BurningClaude-component.pkg</pkg-ref>
+</installer-gui-script>

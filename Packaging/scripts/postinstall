@@ -1,0 +1,18 @@
+#!/bin/bash
+# Launches the freshly installed app.
+#
+# A menu bar app that installs to no visible window and no Dock icon looks like
+# nothing happened otherwise. Launched as the console user rather than as root,
+# which is who the installer runs these as — a root-owned instance would write
+# its preferences and state into root's home.
+set -e
+
+APP="$2/BurningClaude.app"
+USER_NAME=$(/usr/bin/stat -f %Su /dev/console)
+USER_ID=$(/usr/bin/id -u "$USER_NAME")
+
+if [ "$USER_NAME" != "root" ] && [ -d "$APP" ]; then
+    /bin/launchctl asuser "$USER_ID" /usr/bin/open "$APP" || true
+fi
+
+exit 0

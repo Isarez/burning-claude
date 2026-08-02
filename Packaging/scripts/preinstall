@@ -1,0 +1,15 @@
+#!/bin/bash
+# Quits any running copy before its bundle is replaced underneath it.
+#
+# Not merely tidy: the running process would keep the old executable mapped,
+# the menu bar would still show the previous build, and a later quit could
+# write stale preferences over the new install's.
+set -e
+
+/usr/bin/pkill -x BurningClaude 2>/dev/null || true
+# The app it replaces, for anyone upgrading from before the rename.
+/usr/bin/pkill -x ClaudeTokenMeter 2>/dev/null || true
+
+# Give the app a moment to tear its status item down before the files move.
+/bin/sleep 1
+exit 0
