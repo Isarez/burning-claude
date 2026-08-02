@@ -203,18 +203,22 @@ There is no manual token budget: the ceiling is measured, not configured.
 Requires macOS 14+.
 
 ```bash
-brew tap Isarez/tap
-brew install --cask burning-claude
+brew install Isarez/tap/burning-claude
 xattr -dr com.apple.quarantine /Applications/BurningClaude.app
 ```
+
+No `brew tap` first and no `--cask`: naming the tap in full installs from it
+directly, and `brew install` falls back to casks when no formula shares the
+name. After that first install the short `brew install burning-claude` works
+too, since the tap is now on the machine.
 
 That third line is not optional. The build is ad-hoc signed but not notarized —
 there is no Developer ID behind this — so Gatekeeper refuses to open it until
 the quarantine flag Homebrew sets is cleared. Homebrew 6 removed the
 `--no-quarantine` flag that used to avoid the extra step.
 
-`brew uninstall --cask burning-claude` removes it; add `--zap` to take settings
-and usage history with it. Session keys live in the login keychain and survive
+`brew uninstall burning-claude` removes it; add `--zap` to take settings and
+usage history with it. Session keys live in the login keychain and survive
 either way — delete them from Keychain Access by searching for
 `com.local.claudetokenmeter.sessionkey`.
 
