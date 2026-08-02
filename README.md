@@ -200,7 +200,27 @@ There is no manual token budget: the ceiling is measured, not configured.
 
 ## Install
 
-Requires macOS 14+. Swift 5.9+ via Command Line Tools is enough — no Xcode.
+Requires macOS 14+.
+
+```bash
+brew tap Isarez/tap
+brew install --cask burning-claude
+xattr -dr com.apple.quarantine /Applications/BurningClaude.app
+```
+
+That third line is not optional. The build is ad-hoc signed but not notarized —
+there is no Developer ID behind this — so Gatekeeper refuses to open it until
+the quarantine flag Homebrew sets is cleared. Homebrew 6 removed the
+`--no-quarantine` flag that used to avoid the extra step.
+
+`brew uninstall --cask burning-claude` removes it; add `--zap` to take settings
+and usage history with it. Session keys live in the login keychain and survive
+either way — delete them from Keychain Access by searching for
+`com.local.claudetokenmeter.sessionkey`.
+
+### Building it yourself
+
+Swift 5.9+ via Command Line Tools is enough — no Xcode.
 
 Build an installer package:
 
