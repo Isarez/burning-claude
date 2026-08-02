@@ -124,11 +124,23 @@ struct PopoverView: View {
 
     // MARK: - Footer
 
+    /// The byline. Deliberately not folded into `calibrationNote`: that string
+    /// reports where the numbers came from and changes with the data, whereas
+    /// this never changes. Kept to one line so the footer stays two rows at
+    /// every popover width.
+    private static let credit = "Created by Isarez · Powered by Claude"
+
     private var footer: some View {
         HStack(spacing: 10) {
-            Text(calibrationNote)
-                .font(.system(size: 9))
-                .foregroundStyle(.secondary)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(calibrationNote)
+                    .font(.system(size: 9))
+                    .foregroundStyle(.secondary)
+                Text(Self.credit)
+                    .font(.system(size: 9))
+                    .foregroundStyle(.tertiary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
             Spacer()
             Button { NSApplication.shared.terminate(nil) } label: {
                 Image(systemName: "power")
