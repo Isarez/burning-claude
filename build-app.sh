@@ -18,7 +18,10 @@ APP_NAME="BurningClaude"
 # domain on first run. The keychain service is deliberately *not* renamed, so
 # stored session keys are untouched.
 BUNDLE_ID="com.local.burningclaude"
-VERSION="1.0.0"
+# Single-sourced from ./VERSION so the app bundle, the pkg and the cask cannot
+# drift apart — three hardcoded copies is three chances to ship a mislabelled
+# build.
+VERSION="$(cat VERSION)"
 CONFIG="${1:-release}"
 APP="build/${APP_NAME}.app"
 

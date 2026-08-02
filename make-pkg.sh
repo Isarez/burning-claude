@@ -13,7 +13,7 @@ set -euo pipefail
 cd "$(dirname "$0")"
 
 APP_NAME="BurningClaude"
-VERSION="1.0.0"
+VERSION="$(cat VERSION)"
 # Distinct from the app's own bundle identifier: this names the *receipt* macOS
 # keeps for the install, not the app.
 PKG_ID="com.local.burningclaude.app"

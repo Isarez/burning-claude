@@ -18,7 +18,7 @@ set -euo pipefail
 cd "$(dirname "$0")"
 
 APP_NAME="BurningClaude"
-VERSION="1.0.0"
+VERSION="$(cat VERSION)"
 APP="build/${APP_NAME}.app"
 DIST="dist"
 ZIP="${DIST}/${APP_NAME}-${VERSION}.zip"
