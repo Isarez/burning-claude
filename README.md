@@ -45,7 +45,7 @@ Click the menu bar item for the full breakdown: each account's two limits, the
 percentage used, and when each window resets.
 
 <p align="center">
-  <img src="docs/popover.png" width="385" alt="The Burning Claude panel">
+  <img src="docs/popover.png" width="393" alt="The Burning Claude panel">
 </p>
 
 ### Settings
