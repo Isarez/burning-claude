@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/menu-bar.png" width="425" alt="Burning Claude in the menu bar">
+  <img src="docs/menu-bar.png" width="396" alt="Burning Claude in the menu bar">
 </p>
 
 ---
@@ -74,10 +74,9 @@ account list.
 </p>
 
 The key is **checked against claude.ai before anything is saved**, so a typo or
-an expired cookie fails right here instead of becoming a permanently broken row.
-Once accepted it goes into your **login keychain** and the account appears in
-the list. See [Find your session key](#find-your-session-key) for where to get
-the cookie.
+an expired cookie fails here rather than becoming a broken row. It then goes
+into your **login keychain**. See [Find your session
+key](#find-your-session-key) for where to get the cookie.
 
 > A session key grants full access to the account — treat it like a password.
 > The usage endpoint it reads is a private API, and
@@ -87,79 +86,31 @@ the cookie.
 
 ## Requirements
 
-### Your Mac
-
 | | |
 |---|---|
-| **macOS** | **14 Sonoma or later.** Earlier versions will not launch it. |
-| **Chip** | **Apple silicon (M1 and later) only.** The released `.pkg`, `.zip` and Homebrew cask are `arm64`, not universal. |
-| **Intel Macs** | Not supported by the release. Rosetta does not help — it translates Intel to Apple silicon, not the reverse. Build from source (Option C) and you get a native `x86_64` binary that works. |
-| **Disk** | ~3 MB. Nothing else to install: SwiftUI and AppKit ship with macOS. |
-| **Dock** | None. It is a menu bar item only, so you will not find it in the Dock or the app switcher. |
+| **macOS** | 14 Sonoma or later |
+| **Chip** | **Apple silicon only.** The release is `arm64`, not universal. Intel Macs must build from source — Rosetta does not help, it translates the other direction. |
+| **Disk** | ~3 MB. Nothing else to install; SwiftUI ships with macOS. |
+| **Dock** | None — menu bar item only. |
 
-### A Claude account
+**And a Claude account**, in one of two forms. Either alone is enough, and you
+can use both:
 
-You need **at least one** of these two. Either alone is enough, and you can use
-both together.
-
-| | What it needs | Notes |
+| | Needs | Notes |
 |---|---|---|
-| **Session key** | A [claude.ai](https://claude.ai) account and a browser signed in to it | Reads the whole account on demand. Your plan must be metered on the **5-hour / 7-day** windows (Pro and Max are) — if the account reports neither, sign-in is rejected instead of showing an empty row. |
-| **Config directory** | [Claude Code](https://claude.com/claude-code) installed and signed in | `claude` must be on the `PATH` your login shell sets up (`.zshrc`, `.zprofile`), because the app asks the shell for it with `command -v claude`. |
+| **Session key** | A [claude.ai](https://claude.ai) account, signed in to a browser | Your plan must be metered on the 5-hour / 7-day windows (Pro and Max are). If neither is reported, sign-in is rejected rather than showing an empty row. |
+| **Config directory** | [Claude Code](https://claude.com/claude-code), signed in | `claude` must be on the `PATH` your login shell sets up, since the app finds it with `command -v claude`. |
 
-No Anthropic **API key** is needed, and none is used. This reads your
-subscription limits, not the API's.
+No Anthropic **API key** is used — this reads subscription limits, not the API.
 
-### Permissions the app asks for
-
-| | When | Required? |
-|---|---|---|
-| **Login keychain** | The first time a session key is stored | Yes, for session-key accounts. macOS may ask you to confirm. |
-| **Notifications** | First launch | Optional — only for threshold alerts. Denying it changes nothing else. |
-| **Network** | Each refresh, for session-key accounts | HTTPS to `claude.ai` only. Config-directory accounts work completely offline. |
-
-It does **not** need Full Disk Access, Accessibility, Screen Recording, or an
-admin password to run.
-
-### One-time setup steps
-
-- **Gatekeeper.** The build is ad-hoc signed but **not notarized** — there is no
-  Developer ID behind this — so you must clear the quarantine flag once (see
-  [Install](#install)). Without it macOS refuses to open the app.
-- **Login items.** Nothing starts it automatically. Add it under **System
-  Settings › General › Login Items** if you want it after a restart.
-
-### Optional extras
-
-| | For |
-|---|---|
-| [**Homebrew**](https://brew.sh) | The one-line install (Option A) |
-| **Terminal** | *Add config directory* opens Terminal to run `claude auth login` for you |
-| [**jq**](https://jqlang.github.io/jq/) | The status-line snippet that publishes live figures |
-| **Swift 5.9+** | Building from source — Command Line Tools is enough, no Xcode |
+**What it asks of macOS:** the **login keychain** (only to store a session key),
+**notifications** (optional, for threshold alerts), and **network access to
+`claude.ai`** (only for session-key accounts — config directories work
+offline). It needs no Full Disk Access, Accessibility, or admin password.
 
 ## Install
 
-### Option A — Homebrew (recommended)
-
-```bash
-brew install Isarez/tap/burning-claude
-xattr -dr com.apple.quarantine /Applications/BurningClaude.app
-open /Applications/BurningClaude.app
-```
-
-1. **Install.** Naming the tap in full installs from it directly — no separate
-   `brew tap`, and no `--cask`. Afterwards the short
-   `brew install burning-claude` works too.
-2. **Clear the quarantine flag.** Not optional: the build is ad-hoc signed but
-   not notarized, so Gatekeeper refuses to open it until the flag Homebrew sets
-   is cleared.
-3. **Launch.** The flame appears in the menu bar.
-
-To remove it: `brew uninstall burning-claude`, or `--zap` to take settings and
-usage history with it.
-
-### Option B — installer package
+### Option A — installer package (recommended)
 
 1. Download `BurningClaude-<version>.pkg` from the
    [latest release](https://github.com/Isarez/burning-claude/releases/latest).
@@ -170,53 +121,62 @@ usage history with it.
    sudo installer -pkg ~/Downloads/BurningClaude-1.0.1.pkg -target /
    ```
 
-3. It installs to `/Applications` and launches itself. Any running copy is
-   quit first; settings, tracked accounts and usage history are left alone.
+3. It installs to `/Applications` and launches itself. Any running copy is quit
+   first; settings, accounts and usage history are left alone.
+
+No quarantine flag to clear on this route — unlike a downloaded `.zip`, a
+package's payload does not carry one.
+
+### Option B — Homebrew
+
+```bash
+brew install Isarez/tap/burning-claude
+xattr -dr com.apple.quarantine /Applications/BurningClaude.app
+open /Applications/BurningClaude.app
+```
+
+Naming the tap in full installs from it directly — no separate `brew tap`, no
+`--cask`. The second line is **not optional**: the build is ad-hoc signed but
+not notarized, so Gatekeeper refuses to open it until the flag Homebrew sets is
+cleared.
+
+Uninstall with `brew uninstall burning-claude`, or `--zap` to take settings and
+usage history too.
 
 ### Option C — build it yourself
 
 ```bash
 git clone https://github.com/Isarez/burning-claude.git
 cd burning-claude
-./build-app.sh
-cp -R build/BurningClaude.app /Applications/
-open /Applications/BurningClaude.app
+./build-app.sh && cp -R build/BurningClaude.app /Applications/
 ```
 
-`./make-pkg.sh` builds an installer package into `dist/` instead.
+Needs Swift 5.9+ — Command Line Tools is enough, no Xcode. `./make-pkg.sh`
+builds an installer package into `dist/` instead.
 
 ### After installing
 
-The app runs as a menu bar item only — no Dock icon. Quit from the power button
-in the panel footer. Nothing starts it at login; add it under **System Settings
-› General › Login Items** if you want it back after a restart.
+Quit from the power button in the panel footer. Nothing starts it at login; add
+it under **System Settings › General › Login Items** if you want it back after
+a restart.
 
 ## Find your session key
 
-You need the value of the `sessionKey` cookie for `https://claude.ai`. It starts
-with `sk-ant-sid01-` and is about 100 characters long. Sign in to
-[claude.ai](https://claude.ai) first, then:
+You need the `sessionKey` cookie for `https://claude.ai` — it starts with
+`sk-ant-sid01-`. Sign in to [claude.ai](https://claude.ai) first, then open the
+developer tools with <kbd>⌥</kbd><kbd>⌘</kbd><kbd>I</kbd>:
 
-**Chrome, Edge, Brave, Arc, Opera**
-1. Press <kbd>⌥</kbd><kbd>⌘</kbd><kbd>I</kbd> to open DevTools
-2. **Application** tab → **Storage** → **Cookies** → `https://claude.ai`
-3. Click `sessionKey`, then copy its **Value** (right-click → Copy value)
+| Browser | Where |
+|---|---|
+| **Chrome, Edge, Brave, Arc, Opera** | **Application** → Storage → **Cookies** → `https://claude.ai` |
+| **Safari** | **Storage** → **Cookies** → `claude.ai` — first enable *Safari → Settings → Advanced → Show features for web developers* |
+| **Firefox** | **Storage** → **Cookies** → `https://claude.ai` |
 
-**Safari**
-1. Enable the developer tools once: **Safari → Settings → Advanced →
-   Show features for web developers**
-2. Press <kbd>⌥</kbd><kbd>⌘</kbd><kbd>I</kbd> to open the Web Inspector
-3. **Storage** tab → **Cookies** → `claude.ai` → copy the `sessionKey` value
+Click `sessionKey`, copy its **Value**, and paste it into **Settings →
+Accounts → Sign in with session key…**.
 
-**Firefox**
-1. Press <kbd>⌥</kbd><kbd>⌘</kbd><kbd>I</kbd> to open DevTools
-2. **Storage** tab → **Cookies** → `https://claude.ai`
-3. Double-click the `sessionKey` value and copy it
-
-Then paste it into **Settings → Accounts → Sign in with session key…**. Keys
-expire when you sign out of claude.ai in that browser — the panel says so
-explicitly rather than silently reading 0%, and you just remove the account and
-add it again.
+Keys stop working when you sign out of claude.ai in that browser. The panel
+says so explicitly instead of reading 0% — remove the account and add it again.
 
 ## Tracking Claude Code instead (or as well)
 
